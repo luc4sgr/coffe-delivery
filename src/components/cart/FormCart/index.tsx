@@ -129,7 +129,7 @@ export function FormCart() {
 
                 <FormSection>
                     <SubSectionTitle>
-                        <BiCreditCard color="#8047F8" />
+                        <BiCreditCard color="#8047F8" style={{color:"#8047F8"}} />
                         Pagamento
                     </SubSectionTitle>
                     <SectionSubtitle>O pagamento é feito na entrega. Escolha a forma que deseja pagar</SectionSubtitle>

@@ -23,6 +23,12 @@ export const FormSection = styled.div`
   margin-bottom: 12px;
   border-top-right-radius:36px;
   border-bottom-left-radius:36px;
+
+  :focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${(props) => props.theme['purple']};
+    background-color: ${(props) => props.theme['purple-light']};
+  }
 `
 
 export const SectionTitle = styled.h2`
