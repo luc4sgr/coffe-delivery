@@ -1,43 +1,60 @@
-import { useState } from "react"
-import { CoffeeActions, CoffeeDetails, CoffeeImage, CoffeeInfo, CoffeeItem, CoffeeName, CoffeePrice, ConfirmButton, FormContainer, FormSection, Input, InputGroup, PageContainer, PaymentButton, PaymentOptions, QuantityButton, QuantityControl, RemoveButton, SectionSubtitle, SectionTitle, SmallInput, SubSectionTitle, SummaryContainer, TotalAmount, TotalRow, TotalSection } from "./styles"
 import { BiCreditCard, BiMapPin, BiMinus, BiMoney, BiPlus } from "react-icons/bi"
 import { BsBank, BsTrash2 } from "react-icons/bs"
-import { useCart } from "../../../context/CartContext"
+
 import { Coffee } from "../../../context/CoffeesContext"
 import { removeCoffee, updateQuantity } from "../../../reducer/cart/actions"
-import { useCep } from "../../../hooks/useCep"
+import {
+    CoffeeActions, CoffeeDetails, CoffeeImage, CoffeeInfo, CoffeeItem, CoffeeName,
+    CoffeePrice, ConfirmButton, FormContainer, FormSection, Input, InputGroup,
+    PageContainer, PaymentButton, PaymentOptions, QuantityButton, QuantityControl,
+    RemoveButton, SectionSubtitle, SectionTitle, SmallInput, SubSectionTitle,
+    SummaryContainer, TotalAmount, TotalRow, TotalSection
+} from "./styles"
+import { usePurchaseDetails } from "../../../context/PurchaseDetailsContext"
+import { useNavigate } from "react-router-dom"
+import { RoutesEnum } from "../../../routes"
+import { addPaymentMethodAction, PaymentMethodType } from "../../../reducer/purchaseDetails/actions"
 
-export function FormCart() {
-    const [paymentMethod, setPaymentMethod] = useState('')
-    const { cartItems, dispatch } = useCart()
-    const { 
-        address, 
-        isLoading, 
-        error, 
-        handleCepChange, 
+export function CheckoutForm() {
+    const {
+        purchaseDetails,
+        dispatch,
+        cartItems,
+        cartDispatch,
+        addressUtils
+    } = usePurchaseDetails()
+    const navigate = useNavigate();
+    const {
+        address,
+        isLoading,
+        error,
+        handleCepChange,
         handleAddressChange,
-        validateAddress 
-    } = useCep()
-   
+        validateAddress
+    } = addressUtils
 
     const subtotal = cartItems.coffees.reduce((sum, coffee) => sum + coffee.price * coffee.quantity, 0)
     const deliveryFee = 3.50
     const total = subtotal + deliveryFee
 
     const handleIncreaseQuantity = (coffee: Coffee & { quantity: number }) => {
-        dispatch(updateQuantity(coffee.id, coffee.quantity + 1))
+        cartDispatch(updateQuantity(coffee.id, coffee.quantity + 1))
     }
 
     const handleDecreaseQuantity = (coffee: Coffee & { quantity: number }) => {
         if (coffee.quantity === 1) {
             handleRemoveCoffee(coffee)
         } else {
-            dispatch(updateQuantity(coffee.id, coffee.quantity - 1))
+            cartDispatch(updateQuantity(coffee.id, coffee.quantity - 1))
         }
     }
 
     const handleRemoveCoffee = (coffee: Coffee & { quantity: number }) => {
-        dispatch(removeCoffee(coffee.id))
+        cartDispatch(removeCoffee(coffee.id))
+    }
+
+    const handlePaymentMethodChange = (method: PaymentMethodType) => {
+        dispatch(addPaymentMethodAction(method))
     }
 
     const handleConfirmOrder = () => {
@@ -46,19 +63,13 @@ export function FormCart() {
             return
         }
 
-        if (!paymentMethod) {
+        if (!purchaseDetails.paymentMethod) {
             alert('Por favor, selecione um método de pagamento')
             return
         }
-
-        console.log({
-            address,
-            paymentMethod,
-            items: cartItems.coffees,
-            total
-        })
+        navigate(RoutesEnum.ORDER_INFORMATION)
     }
-  
+
     return (
         <PageContainer>
             <FormContainer>
@@ -81,7 +92,7 @@ export function FormCart() {
                             disabled={isLoading}
                         />
                         {error && <span style={{ color: 'red', fontSize: '14px' }}>{error}</span>}
-                        
+
                         <Input
                             type="text"
                             placeholder="Rua"
@@ -129,29 +140,29 @@ export function FormCart() {
 
                 <FormSection>
                     <SubSectionTitle>
-                        <BiCreditCard color="#8047F8" style={{color:"#8047F8"}} />
+                        <BiCreditCard color="#8047F8" style={{ color: "#8047F8" }} />
                         Pagamento
                     </SubSectionTitle>
                     <SectionSubtitle>O pagamento é feito na entrega. Escolha a forma que deseja pagar</SectionSubtitle>
 
                     <PaymentOptions>
                         <PaymentButton
-                            isSelected={paymentMethod === 'credit'}
-                            onClick={() => setPaymentMethod('credit')}
+                            isSelected={purchaseDetails.paymentMethod === PaymentMethodType.CREDIT_CARD}
+                            onClick={() => handlePaymentMethodChange(PaymentMethodType.CREDIT_CARD)}
                         >
                             <BiCreditCard size={16} />
                             Cartão de crédito
                         </PaymentButton>
                         <PaymentButton
-                            isSelected={paymentMethod === 'debit'}
-                            onClick={() => setPaymentMethod('debit')}
+                            isSelected={purchaseDetails.paymentMethod === PaymentMethodType.DEBIT_CARD}
+                            onClick={() => handlePaymentMethodChange(PaymentMethodType.DEBIT_CARD)}
                         >
                             <BsBank size={16} />
                             Cartão de débito
                         </PaymentButton>
                         <PaymentButton
-                            isSelected={paymentMethod === 'cash'}
-                            onClick={() => setPaymentMethod('cash')}
+                            isSelected={purchaseDetails.paymentMethod === PaymentMethodType.CASH}
+                            onClick={() => handlePaymentMethodChange(PaymentMethodType.CASH)}
                         >
                             <BiMoney size={16} />
                             Dinheiro
