@@ -19,7 +19,7 @@ export function Header() {
           <BiMapPin size={22} />
           Fotaleza, CE
         </LocationButton>
-        <Link to="/cart" title='Carinho de café'>
+        <Link to="/checkout" title='Carinho de café'>
          <CartButton />
         </Link>
       </Actions>
