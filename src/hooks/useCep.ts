@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-interface Address {
+export interface Address {
     cep: string
     street: string
     number: string
