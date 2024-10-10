@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { CoffeesProvider } from "./context/CoffeesContext";
 import { Router } from "./routes";
 import { CartProvider } from "./context/CartContext";
+import { PurchaseDetailsProvider } from "./context/PurchaseDetailsContext";
 
 
 export function App() {
@@ -13,9 +14,11 @@ export function App() {
     <ThemeProvider theme={defaultTheme}>
       <BrowserRouter>
         <CartProvider>
+        <PurchaseDetailsProvider>
           <CoffeesProvider>
             <Router />
           </CoffeesProvider>
+        </PurchaseDetailsProvider>
         </CartProvider>
       </BrowserRouter>
       <GlobalStyle />
