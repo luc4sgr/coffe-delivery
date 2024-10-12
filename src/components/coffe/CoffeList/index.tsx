@@ -10,7 +10,7 @@ export function CoffeList() {
         <Container>
             {
                 coffees.map((coffee) => (
-                    <CoffeeCard key={coffee.id} id={coffee.id} />
+                    <CoffeeCard key={coffee.id} {...coffee}  />
                 ))
             }
         </Container>
