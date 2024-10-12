@@ -3,6 +3,7 @@ import { useCart } from './CartContext';
 import { useCep } from '../hooks/useCep';
 import { purchaseDetailsReducer, PurchaseDetailsState } from '../reducer/purchaseDetails/reducer';
 import { addDeliveryAddressAction, PurchaseDetailsAction, updateTotalAction } from '../reducer/purchaseDetails/actions';
+import { useCoffee } from './CoffeesContext';
 
 
 
@@ -18,8 +19,10 @@ const PurchaseDetailsContext = createContext<PurchaseDetailsContextType | undefi
 
 export const PurchaseDetailsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { cartItems, dispatch: cartDispatch } = useCart();
+  const { coffees } = useCoffee();
   const addressUtils = useCep();
 
+  
   const [purchaseDetails, dispatch] = useReducer(purchaseDetailsReducer, {
     deliveryAddress: addressUtils.address,
     paymentMethod: null,
@@ -27,8 +30,16 @@ export const PurchaseDetailsProvider: React.FC<{ children: ReactNode }> = ({ chi
   });
 
   useEffect(() => {
-    const total = cartItems.coffees.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    dispatch(updateTotalAction(total));
+    // if(coffees.length > 0 && cartItems.coffees.length > 0) {
+    //   const cofeesInCart = coffees?.filter(coffee => cartItems.coffees.some(item => item.id === coffee.id));
+    //   const total = cofeesInCart.reduce((acc, item) => acc + item.price * (cartItems.coffees.find(cartItem => cartItem.id === item.id)?.quantity || 0), 0);
+    //   dispatch(updateTotalAction(total));
+
+    // }
+    // const cofeesInCart = coffees?.filter(coffee => cartItems.coffees.some(item => item.id === coffee.id));
+    // const total = cofeesInCart.reduce((acc, item) => acc + item.price * (cartItems.coffees.find(cartItem => cartItem.id === item.id)?.quantity || 0), 0);
+    // // const total = cartItems.coffees.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    // dispatch(updateTotalAction(total));
   }, [cartItems]);
 
   useEffect(() => {

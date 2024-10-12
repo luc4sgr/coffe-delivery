@@ -2,11 +2,6 @@ import { CartAction, CartActionType } from "./actions";
 
 interface Coffee {
     id: string;
-    name: string;
-    price: number;
-    description: string;
-    image: string;
-    tags: string[];
     quantity: number;
 }
 
@@ -16,7 +11,7 @@ export interface CartState {
 
 
 export const cartReducer = (state: CartState, action: CartAction): CartState => {
-    console.log(action);
+
     switch (action.type) {
         case CartActionType.ADD_COFFEE:
             return { ...state, coffees: [...state.coffees, action.payload] };
@@ -34,7 +29,7 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
                         : coffee
                 ),
             };
-        case CartActionType.ADD_MULTIPLE_COFFEES:
+        case CartActionType.ADD_MULTIPLE_COFFEES_CARTS:
             return {
                 ...state,
                 coffees:action.payload

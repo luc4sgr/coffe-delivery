@@ -1,26 +1,21 @@
 export interface Coffee {
   id: string;
-  name: string;
-  price: number;
   quantity: number;
-  description: string;
-  image: string;
-  tags: string[];
 }
 
 export enum CartActionType {
   ADD_COFFEE = 'ADD_COFFEE',
   REMOVE_COFFEE = 'REMOVE_COFFEE',
   UPDATE_QUANTITY = 'UPDATE_QUANTITY',
-  ADD_MULTIPLE_COFFEES = 'ADD_MULTIPLE_COFFEES',
+  ADD_MULTIPLE_COFFEES_CARTS = 'ADD_MULTIPLE_COFFEES_CARTS',
 }
 
 interface AddCoffeeAction {
   type: CartActionType.ADD_COFFEE;
-  payload: Coffee;
+  payload: {id: string, quantity: number};
 }
 interface AddMultipleCoffeesAction {
-  type: CartActionType.ADD_MULTIPLE_COFFEES;
+  type: CartActionType.ADD_MULTIPLE_COFFEES_CARTS;
   payload: Coffee[];
 }
 
@@ -40,9 +35,9 @@ export type CartAction =
   UpdateQuantityAction |
   AddMultipleCoffeesAction
 
-export const addCoffee = (coffee: Coffee): AddCoffeeAction => ({
+export const addCoffee = (id: string, quantity: number): AddCoffeeAction => ({
   type: CartActionType.ADD_COFFEE,
-  payload: coffee,
+  payload: { id, quantity },
 });
 
 export const removeCoffee = (id: string): RemoveCoffeeAction => ({
@@ -56,6 +51,6 @@ export const updateQuantity = (id: string, quantity: number): UpdateQuantityActi
 });
 
 export const addMultipleCoffees = (coffees: Coffee[]): AddMultipleCoffeesAction => ({
-  type: CartActionType.ADD_MULTIPLE_COFFEES,
+  type: CartActionType.ADD_MULTIPLE_COFFEES_CARTS,
   payload: coffees,
 });
